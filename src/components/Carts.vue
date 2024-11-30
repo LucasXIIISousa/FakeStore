@@ -1,53 +1,38 @@
 <template>
-  <div class="container">
-    <h1 class="my-4">Carts</h1>
-    <div class="row mb-4">
-      <div class="col-md-4">
-        <input type="date" v-model="filter.date" class="form-control" placeholder="Filter by Date">
-      </div>
-      <div class="col-md-4">
-        <input type="number" v-model="filter.userId" class="form-control" placeholder="Filter by User ID">
-      </div>
-      <div class="col-md-4">
-        <button @click="applyFilter" class="btn btn-primary">Apply Filter</button>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-md-12">
-        <ul class="list-group">
-          <li v-for="cart in filteredCarts" :key="cart.id" class="list-group-item">
-            <router-link :to="'/cart/' + cart.id">Cart ID: {{ cart.id }} - User ID: {{ cart.userId }} - Date: {{ cart.date }}</router-link>
-          </li>
-        </ul>
-      </div>
-    </div>
+  <div>
+    <h1>Cart</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in cartItems" :key="item.id">
+          <td>{{ item.name }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.price * item.quantity }}</td>
+          <td>
+            <button @click="removeFromCart(item.id)">Remove</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
-  name: 'Carts',
-  data() {
-    return {
-      filter: {
-        date: '',
-        userId: ''
-      }
-    };
-  },
   computed: {
-    ...mapGetters(['filteredCarts'])
+    ...mapState('carts', ['cartItems']),
   },
   methods: {
-    ...mapActions(['fetchCarts']),
-    applyFilter() {
-      this.fetchCarts();
-    }
+    ...mapActions('carts', ['removeFromCart']),
   },
-  created() {
-    this.fetchCarts();
-  }
 };
 </script>

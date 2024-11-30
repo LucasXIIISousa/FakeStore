@@ -6,6 +6,7 @@
       <h2 class="text-center mb-3">Sign Up</h2>
 
       <form @submit.prevent="signup">
+        <!-- First Name -->
         <div class="mb-3">
           <input
             v-model="user.firstname"
@@ -15,6 +16,8 @@
             required
           />
         </div>
+
+        <!-- Last Name -->
         <div class="mb-3">
           <input
             v-model="user.lastname"
@@ -24,6 +27,8 @@
             required
           />
         </div>
+
+        <!-- Username -->
         <div class="mb-3">
           <input
             v-model="user.username"
@@ -33,6 +38,8 @@
             required
           />
         </div>
+
+        <!-- Email -->
         <div class="mb-3">
           <input
             v-model="user.email"
@@ -42,6 +49,8 @@
             required
           />
         </div>
+
+        <!-- Phone Number -->
         <div class="mb-3">
           <input
             v-model="user.phone"
@@ -51,6 +60,8 @@
             required
           />
         </div>
+
+        <!-- Password -->
         <div class="mb-3">
           <input
             v-model="user.password"
@@ -60,6 +71,8 @@
             required
           />
         </div>
+
+        <!-- City -->
         <div class="mb-3">
           <input
             v-model="user.city"
@@ -69,6 +82,8 @@
             required
           />
         </div>
+
+        <!-- Street -->
         <div class="mb-3">
           <input
             v-model="user.street"
@@ -78,6 +93,8 @@
             required
           />
         </div>
+
+        <!-- House Number -->
         <div class="mb-3">
           <input
             v-model="user.number"
@@ -87,6 +104,8 @@
             required
           />
         </div>
+
+        <!-- ZIP Code -->
         <div class="mb-3">
           <input
             v-model="user.zipcode"
@@ -96,13 +115,21 @@
             required
           />
         </div>
+
+        <!-- Submit Button -->
         <button type="submit" class="btn btn-primary btn-block w-100">Sign Up</button>
       </form>
+
+      <!-- Feedback Messages -->
+      <p v-if="successMessage" class="text-success mt-3">{{ successMessage }}</p>
+      <p v-if="errorMessage" class="text-danger mt-3">{{ errorMessage }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex';
+
 export default {
   name: 'Signup',
   data() {
@@ -119,9 +146,12 @@ export default {
         number: '',
         zipcode: '',
       },
+      errorMessage: '',
+      successMessage: '',
     };
   },
   methods: {
+    ...mapActions('auth', ['register']), // Mapeia a ação Vuex do módulo auth
     async signup() {
       const userData = {
         email: this.user.email,
@@ -141,25 +171,17 @@ export default {
       };
 
       try {
-        const response = await fetch('https://fakestoreapi.com/users', {
-          method: 'POST',
-          body: JSON.stringify(userData),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        });
+        // Chama a ação Vuex para registrar o usuário
+        await this.register(userData);
 
-        const result = await response.json();
-
-        if (response.ok) {
-          localStorage.setItem('token', btoa(this.user.email + ':' + this.user.password)); // Simula token
-          this.$router.push('/users'); // Redireciona para a página de usuários
-        } else {
-          console.error('Error creating user:', result);
-        }
+        // Exibe mensagem de sucesso e redireciona
+        this.successMessage = 'Registration successful! Redirecting...';
+        this.errorMessage = '';
+        setTimeout(() => this.$router.push('/dashboard'), 2000); // Redireciona após 2 segundos
       } catch (error) {
-        console.error('Error during signup:', error);
-        alert('Signup failed! Please try again.');
+        // Exibe mensagem de erro
+        this.errorMessage = 'Registration failed. Please try again.';
+        this.successMessage = '';
       }
     },
   },
@@ -171,6 +193,7 @@ export default {
   height: 100vh;
   background: #f7f7f7;
 }
+
 .login-card {
   background: white;
   padding: 2rem;
@@ -180,6 +203,7 @@ export default {
   max-width: 400px;
   text-align: center;
 }
+
 .logo {
   width: 120px;
   display: block;

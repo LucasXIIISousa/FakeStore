@@ -69,6 +69,12 @@
                     View
                   </button>
                   <button
+                    class="btn btn-warning btn-sm w-100 mb-2"
+                    @click="addToCart(product)"
+                  >
+                    Add to Cart
+                  </button>
+                  <button
                     class="btn btn-danger btn-sm w-100"
                     @click="deleteProduct(product.id)"
                   >
@@ -98,7 +104,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(['allProducts', 'allCategories']),
+    ...mapGetters(['allProducts', 'allCategories', 'cartItems']),
     filteredProducts() {
       let products = this.allProducts;
 
@@ -141,7 +147,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions(['fetchProducts', 'fetchCategories', 'deleteProduct']),
+    ...mapActions(['fetchProducts', 'fetchCategories', 'deleteProduct', 'addToCart']),
     viewProduct(id) {
       this.$router.push(`/products/${id}`);
     },
@@ -156,6 +162,14 @@ export default {
         // Seleciona a primeira categoria automaticamente
         this.selectedCategories = [this.allCategories[0]];
       }
+    },
+    addToCart(product) {
+      this.addToCart({
+        id: product.id,
+        title: product.title,
+        price: product.price,
+        image: product.image,
+      });
     },
   },
   watch: {

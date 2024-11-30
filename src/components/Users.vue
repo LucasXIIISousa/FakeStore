@@ -3,27 +3,23 @@
     <h1>Users</h1>
     <ul>
       <li v-for="user in users" :key="user.id">
-        <strong>{{ user.name.firstname }} {{ user.name.lastname }}</strong> - 
-        {{ user.email }} ({{ user.phone }})
-        <button @click="deleteUser(user.id)">Delete</button>
+        {{ user.name.firstname }} {{ user.name.lastname }} - {{ user.email }}
       </li>
     </ul>
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
-
 export default {
   name: 'Users',
-  computed: {
-    ...mapGetters(['allUsers']),
+  data() {
+    return {
+      users: [],
+    };
   },
-  methods: {
-    ...mapActions(['fetchUsers', 'deleteUser']),
-  },
-  created() {
-    this.fetchUsers();
+  async created() {
+    const response = await fetch('https://fakestoreapi.com/users');
+    this.users = await response.json();
   },
 };
 </script>
